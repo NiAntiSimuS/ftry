@@ -1,0 +1,33 @@
+﻿<Page x:Class="OBJ.MainWindow"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OBJ"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Page2">
+
+    <Grid>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="457" Margin="-6,-7,0,0" VerticalAlignment="Top" Width="806">
+            <Grid x:Name="ToDoList" Background="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" RenderTransformOrigin="-0.086,0.407">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="688*"/>
+                    <ColumnDefinition Width="31*"/>
+                    <ColumnDefinition Width="15*"/>
+                    <ColumnDefinition Width="70*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="label_1" Content="TO DO LIST" HorizontalAlignment="Left" Height="60" Margin="10,10,0,0" VerticalAlignment="Top" Width="784" Foreground="#FFEAF704" Panel.ZIndex="-4" VerticalContentAlignment="Center" FontSize="40" Grid.ColumnSpan="4"/>
+                <TextBox x:Name="titleTextBox" HorizontalAlignment="Left" Height="18" Margin="10,88,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="784" Grid.ColumnSpan="4"/>
+                <TextBox x:Name="descriptionTextBox" HorizontalAlignment="Left" Height="18" Margin="10,123,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="784" Grid.ColumnSpan="4"/>
+                <Label Content="Description:" HorizontalAlignment="Left" Height="17" Margin="10,106,0,0" VerticalAlignment="Top" Width="784" FontSize="6" Foreground="#FFEAF704" Grid.ColumnSpan="4"/>
+                <Label Content="Title:" HorizontalAlignment="Left" Height="17" Margin="10,71,0,0" VerticalAlignment="Top" Width="784" FontSize="6" Foreground="#FFEAF704" Grid.ColumnSpan="4"/>
+                <Button x:Name="deleteButton" Content="Delete" HorizontalAlignment="Left" Height="32" Margin="413,146,0,0" VerticalAlignment="Top" Width="188"/>
+                <Button x:Name="saveButton" Content="Save" HorizontalAlignment="Left" Height="32" Margin="606,146,0,0" VerticalAlignment="Top" Width="188" Grid.ColumnSpan="4"/>
+                <Button x:Name="newButton" Content="New" HorizontalAlignment="Left" Height="32" Margin="10,146,0,0" VerticalAlignment="Top" Width="188"/>
+                <Button x:Name="editButton" Content="Edit" HorizontalAlignment="Left" Height="32" Margin="203,146,0,0" VerticalAlignment="Top" Width="188"/>
+                <DataGrid x:Name="ToDoListView" HorizontalAlignment="Left" Height="262" Margin="10,183,0,0" VerticalAlignment="Top" Width="784" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.ColumnSpan="4"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>
