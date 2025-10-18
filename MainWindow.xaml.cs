@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using Newtonsoft.Json;
 
 namespace OBJ
 {
@@ -9,35 +12,103 @@ namespace OBJ
     {
         private DataTable todoList;
         private bool isEditing = false;
+        private string dataFilePath = "todolist.json";
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeDataTable();
             InitializeEventHandlers();
+            LoadDataFromJson();
         }
 
         private void InitializeDataTable()
         {
-            // Create DataTable
+            
             todoList = new DataTable("TodoList");
 
-            // Create columns
+            
             todoList.Columns.Add("Title", typeof(string));
             todoList.Columns.Add("Description", typeof(string));
 
-            // Point our datagrid to our datasource
+            
             ToDoListView.ItemsSource = todoList.DefaultView;
         }
 
         private void InitializeEventHandlers()
         {
-            // Подписываемся на события кнопок
+            
             newButton.Click += newButton_Click;
             editButton.Click += editButton_Click;
             deleteButton.Click += deleteButton_Click;
             saveButton.Click += saveButton_Click;
             ToDoListView.SelectionChanged += ToDoListView_SelectionChanged;
+        }
+
+        
+        public class TodoItem
+        {
+            public string Title { get; set; }
+            public string Description { get; set; }
+        }
+
+        
+        private void LoadDataFromJson()
+        {
+            try
+            {
+                if (File.Exists(dataFilePath))
+                {
+                    string json = File.ReadAllText(dataFilePath);
+                    List<TodoItem> items = JsonConvert.DeserializeObject<List<TodoItem>>(json);
+
+                    if (items != null)
+                    {
+                        foreach (var item in items)
+                        {
+                            DataRow newRow = todoList.NewRow();
+                            newRow["Title"] = item.Title;
+                            newRow["Description"] = item.Description;
+                            todoList.Rows.Add(newRow);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading data: {ex.Message}", "Error",
+                              MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        
+        private void SaveDataToJson()
+        {
+            try
+            {
+                List<TodoItem> items = new List<TodoItem>();
+
+                foreach (DataRow row in todoList.Rows)
+                {
+                    
+                    if (row.RowState != DataRowState.Deleted && row.RowState != DataRowState.Detached)
+                    {
+                        items.Add(new TodoItem
+                        {
+                            Title = row["Title"].ToString(),
+                            Description = row["Description"].ToString()
+                        });
+                    }
+                }
+
+                string json = JsonConvert.SerializeObject(items, Formatting.Indented);
+                File.WriteAllText(dataFilePath, json);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving data: {ex.Message}", "Error",
+                              MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void newButton_Click(object sender, RoutedEventArgs e)
@@ -58,7 +129,7 @@ namespace OBJ
             }
 
             isEditing = true;
-            // Fill text fields with data from selected row
+            
             DataRowView selectedRow = (DataRowView)ToDoListView.SelectedItem;
             titleTextBox.Text = selectedRow["Title"].ToString();
             descriptionTextBox.Text = selectedRow["Description"].ToString();
@@ -77,14 +148,15 @@ namespace OBJ
             {
                 DataRowView selectedRow = (DataRowView)ToDoListView.SelectedItem;
                 selectedRow.Delete();
+                todoList.AcceptChanges();
 
-                // Clear fields after deletion
+                
                 titleTextBox.Text = "";
                 descriptionTextBox.Text = "";
                 isEditing = false;
 
-                // Обновляем DataTable
-                todoList.AcceptChanges();
+                
+                SaveDataToJson();
             }
             catch (Exception ex)
             {
@@ -123,13 +195,14 @@ namespace OBJ
                     todoList.Rows.Add(newRow);
                 }
 
-                // Clear fields and reset editing state
+                
+                todoList.AcceptChanges();
+                SaveDataToJson();
+
+                
                 titleTextBox.Text = "";
                 descriptionTextBox.Text = "";
                 isEditing = false;
-
-                // Refresh the DataGrid view
-                todoList.AcceptChanges();
             }
             catch (Exception ex)
             {
@@ -140,7 +213,7 @@ namespace OBJ
 
         private void ToDoListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Enable/disable buttons based on selection
+            //ghfgf
             deleteButton.IsEnabled = ToDoListView.SelectedItem != null;
             editButton.IsEnabled = ToDoListView.SelectedItem != null;
         }
